@@ -1,6 +1,7 @@
 #pragma once
 #include "user.h"
 #include "alertForm.h"
+#include "inventory.h"
 
 namespace MPLA104 {
 
@@ -41,6 +42,7 @@ namespace MPLA104 {
 
 
 	private: System::Windows::Forms::Label^ adminDashLabel;
+	private: System::Windows::Forms::Button^ inventoryButton;
 
 
 	private:
@@ -60,6 +62,7 @@ namespace MPLA104 {
 			this->adminExit = (gcnew System::Windows::Forms::Button());
 			this->adminAlertButton = (gcnew System::Windows::Forms::Button());
 			this->adminDashLabel = (gcnew System::Windows::Forms::Label());
+			this->inventoryButton = (gcnew System::Windows::Forms::Button());
 			this->SuspendLayout();
 			// 
 			// adminExit
@@ -70,7 +73,7 @@ namespace MPLA104 {
 			this->adminExit->FlatAppearance->MouseDownBackColor = System::Drawing::Color::Transparent;
 			this->adminExit->FlatAppearance->MouseOverBackColor = System::Drawing::Color::Transparent;
 			this->adminExit->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
-			this->adminExit->Location = System::Drawing::Point(418, 442);
+			this->adminExit->Location = System::Drawing::Point(546, 438);
 			this->adminExit->Name = L"adminExit";
 			this->adminExit->Size = System::Drawing::Size(225, 69);
 			this->adminExit->TabIndex = 7;
@@ -85,7 +88,7 @@ namespace MPLA104 {
 			this->adminAlertButton->FlatAppearance->MouseDownBackColor = System::Drawing::Color::Transparent;
 			this->adminAlertButton->FlatAppearance->MouseOverBackColor = System::Drawing::Color::Transparent;
 			this->adminAlertButton->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
-			this->adminAlertButton->Location = System::Drawing::Point(160, 442);
+			this->adminAlertButton->Location = System::Drawing::Point(287, 438);
 			this->adminAlertButton->Name = L"adminAlertButton";
 			this->adminAlertButton->Size = System::Drawing::Size(225, 69);
 			this->adminAlertButton->TabIndex = 5;
@@ -107,11 +110,27 @@ namespace MPLA104 {
 			this->adminDashLabel->Text = L"Welcome, User";
 			this->adminDashLabel->Click += gcnew System::EventHandler(this, &adminDash::lblH1_Click);
 			// 
+			// inventoryButton
+			// 
+			this->inventoryButton->BackColor = System::Drawing::Color::Transparent;
+			this->inventoryButton->Cursor = System::Windows::Forms::Cursors::Hand;
+			this->inventoryButton->FlatAppearance->BorderSize = 0;
+			this->inventoryButton->FlatAppearance->MouseDownBackColor = System::Drawing::Color::Transparent;
+			this->inventoryButton->FlatAppearance->MouseOverBackColor = System::Drawing::Color::Transparent;
+			this->inventoryButton->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
+			this->inventoryButton->Location = System::Drawing::Point(31, 441);
+			this->inventoryButton->Name = L"inventoryButton";
+			this->inventoryButton->Size = System::Drawing::Size(225, 69);
+			this->inventoryButton->TabIndex = 8;
+			this->inventoryButton->UseVisualStyleBackColor = false;
+			this->inventoryButton->Click += gcnew System::EventHandler(this, &adminDash::inventoryButton_Click);
+			// 
 			// adminDash
 			// 
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::None;
 			this->BackgroundImage = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"$this.BackgroundImage")));
 			this->ClientSize = System::Drawing::Size(800, 600);
+			this->Controls->Add(this->inventoryButton);
 			this->Controls->Add(this->adminExit);
 			this->Controls->Add(this->adminAlertButton);
 			this->Controls->Add(this->adminDashLabel);
@@ -134,6 +153,10 @@ private: System::Void lblH1_Click(System::Object^ sender, System::EventArgs^ e) 
 private: System::Void adminAlertButton_Click(System::Object^ sender, System::EventArgs^ e) {
 	MPLA104::alertForm alertForm;
 	alertForm.ShowDialog();
+}
+private: System::Void inventoryButton_Click(System::Object^ sender, System::EventArgs^ e) {
+	MPLA104::inventory inventory;
+	inventory.ShowDialog();
 }
 };
 }

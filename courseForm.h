@@ -26,6 +26,23 @@ namespace MPLA104 {
 	private: System::Windows::Forms::Button^ exptad;
 
 	private: System::Windows::Forms::Button^ exptac;
+	private: System::Windows::Forms::Label^ label1;
+	private: System::Windows::Forms::ComboBox^ addtlCb;
+
+	private: System::Windows::Forms::Label^ label3;
+	private: System::Windows::Forms::TextBox^ qtyTb;
+	private: System::Windows::Forms::Panel^ panel105;
+	private: System::Windows::Forms::Button^ button205;
+
+	private: System::Windows::Forms::Button^ button204;
+
+	private: System::Windows::Forms::Button^ button203;
+
+	private: System::Windows::Forms::Button^ button202;
+
+	private: System::Windows::Forms::Button^ button201;
+
+
 
 	public:
 		String^ uId;
@@ -36,12 +53,14 @@ namespace MPLA104 {
 
 			exptaPanel->Hide();
 			finalPanel->Hide();
+			panel105->Hide();
 			
 			uName = user->name;
 			uId = user->userId;
 
 			courseForm::coursesName->Text = "Name: " + uName;
 			courseForm::coursesId->Text = "Student ID: " + uId;
+			qtyTb->Text = "0";
 
 			CheckSectionAccess();
 		}
@@ -118,7 +137,17 @@ namespace MPLA104 {
 			this->exptac = (gcnew System::Windows::Forms::Button());
 			this->exptab = (gcnew System::Windows::Forms::Button());
 			this->exptaa = (gcnew System::Windows::Forms::Button());
+			this->panel105 = (gcnew System::Windows::Forms::Panel());
+			this->button205 = (gcnew System::Windows::Forms::Button());
+			this->button204 = (gcnew System::Windows::Forms::Button());
+			this->button203 = (gcnew System::Windows::Forms::Button());
+			this->button202 = (gcnew System::Windows::Forms::Button());
+			this->button201 = (gcnew System::Windows::Forms::Button());
 			this->finalPanel = (gcnew System::Windows::Forms::Panel());
+			this->label3 = (gcnew System::Windows::Forms::Label());
+			this->qtyTb = (gcnew System::Windows::Forms::TextBox());
+			this->label1 = (gcnew System::Windows::Forms::Label());
+			this->addtlCb = (gcnew System::Windows::Forms::ComboBox());
 			this->coursesConfirm = (gcnew System::Windows::Forms::Button());
 			this->coursesExpt = (gcnew System::Windows::Forms::Label());
 			this->sectionCb = (gcnew System::Windows::Forms::ComboBox());
@@ -131,6 +160,7 @@ namespace MPLA104 {
 			this->fiveLcs = (gcnew System::Windows::Forms::Button());
 			this->coursesReturn = (gcnew System::Windows::Forms::Button());
 			this->exptaPanel->SuspendLayout();
+			this->panel105->SuspendLayout();
 			this->finalPanel->SuspendLayout();
 			this->SuspendLayout();
 			// 
@@ -257,9 +287,136 @@ namespace MPLA104 {
 			this->exptaa->UseVisualStyleBackColor = false;
 			this->exptaa->Click += gcnew System::EventHandler(this, &courseForm::button1_Click);
 			// 
+			// panel105
+			// 
+			this->panel105->BackColor = System::Drawing::Color::White;
+			this->panel105->Controls->Add(this->button205);
+			this->panel105->Controls->Add(this->button204);
+			this->panel105->Controls->Add(this->button203);
+			this->panel105->Controls->Add(this->button202);
+			this->panel105->Controls->Add(this->button201);
+			this->panel105->Location = System::Drawing::Point(269, 122);
+			this->panel105->Name = L"panel105";
+			this->panel105->Size = System::Drawing::Size(265, 300);
+			this->panel105->TabIndex = 9;
+			// 
+			// button205
+			// 
+			this->button205->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(216)), static_cast<System::Int32>(static_cast<System::Byte>(38)),
+				static_cast<System::Int32>(static_cast<System::Byte>(39)));
+			this->button205->Cursor = System::Windows::Forms::Cursors::Hand;
+			this->button205->FlatAppearance->BorderSize = 0;
+			this->button205->FlatAppearance->MouseDownBackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(184)),
+				static_cast<System::Int32>(static_cast<System::Byte>(33)), static_cast<System::Int32>(static_cast<System::Byte>(33)));
+			this->button205->FlatAppearance->MouseOverBackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(184)),
+				static_cast<System::Int32>(static_cast<System::Byte>(33)), static_cast<System::Int32>(static_cast<System::Byte>(33)));
+			this->button205->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
+			this->button205->Font = (gcnew System::Drawing::Font(L"Neue Montreal Medium", 14.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->button205->ForeColor = System::Drawing::Color::White;
+			this->button205->Location = System::Drawing::Point(30, 230);
+			this->button205->Name = L"button205";
+			this->button205->Size = System::Drawing::Size(207, 44);
+			this->button205->TabIndex = 8;
+			this->button205->Text = L"Experiment 205";
+			this->button205->UseVisualStyleBackColor = false;
+			this->button205->Click += gcnew System::EventHandler(this, &courseForm::button205_Click);
+			// 
+			// button204
+			// 
+			this->button204->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(216)), static_cast<System::Int32>(static_cast<System::Byte>(38)),
+				static_cast<System::Int32>(static_cast<System::Byte>(39)));
+			this->button204->Cursor = System::Windows::Forms::Cursors::Hand;
+			this->button204->FlatAppearance->BorderSize = 0;
+			this->button204->FlatAppearance->MouseDownBackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(184)),
+				static_cast<System::Int32>(static_cast<System::Byte>(33)), static_cast<System::Int32>(static_cast<System::Byte>(33)));
+			this->button204->FlatAppearance->MouseOverBackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(184)),
+				static_cast<System::Int32>(static_cast<System::Byte>(33)), static_cast<System::Int32>(static_cast<System::Byte>(33)));
+			this->button204->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
+			this->button204->Font = (gcnew System::Drawing::Font(L"Neue Montreal Medium", 14.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->button204->ForeColor = System::Drawing::Color::White;
+			this->button204->Location = System::Drawing::Point(30, 180);
+			this->button204->Name = L"button204";
+			this->button204->Size = System::Drawing::Size(207, 44);
+			this->button204->TabIndex = 7;
+			this->button204->Text = L"Experiment 204";
+			this->button204->UseVisualStyleBackColor = false;
+			this->button204->Click += gcnew System::EventHandler(this, &courseForm::button204_Click);
+			// 
+			// button203
+			// 
+			this->button203->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(216)), static_cast<System::Int32>(static_cast<System::Byte>(38)),
+				static_cast<System::Int32>(static_cast<System::Byte>(39)));
+			this->button203->Cursor = System::Windows::Forms::Cursors::Hand;
+			this->button203->FlatAppearance->BorderSize = 0;
+			this->button203->FlatAppearance->MouseDownBackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(184)),
+				static_cast<System::Int32>(static_cast<System::Byte>(33)), static_cast<System::Int32>(static_cast<System::Byte>(33)));
+			this->button203->FlatAppearance->MouseOverBackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(184)),
+				static_cast<System::Int32>(static_cast<System::Byte>(33)), static_cast<System::Int32>(static_cast<System::Byte>(33)));
+			this->button203->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
+			this->button203->Font = (gcnew System::Drawing::Font(L"Neue Montreal Medium", 14.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->button203->ForeColor = System::Drawing::Color::White;
+			this->button203->Location = System::Drawing::Point(30, 130);
+			this->button203->Name = L"button203";
+			this->button203->Size = System::Drawing::Size(207, 44);
+			this->button203->TabIndex = 6;
+			this->button203->Text = L"Experiment 203";
+			this->button203->UseVisualStyleBackColor = false;
+			this->button203->Click += gcnew System::EventHandler(this, &courseForm::button203_Click);
+			// 
+			// button202
+			// 
+			this->button202->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(216)), static_cast<System::Int32>(static_cast<System::Byte>(38)),
+				static_cast<System::Int32>(static_cast<System::Byte>(39)));
+			this->button202->Cursor = System::Windows::Forms::Cursors::Hand;
+			this->button202->FlatAppearance->BorderSize = 0;
+			this->button202->FlatAppearance->MouseDownBackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(184)),
+				static_cast<System::Int32>(static_cast<System::Byte>(33)), static_cast<System::Int32>(static_cast<System::Byte>(33)));
+			this->button202->FlatAppearance->MouseOverBackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(184)),
+				static_cast<System::Int32>(static_cast<System::Byte>(33)), static_cast<System::Int32>(static_cast<System::Byte>(33)));
+			this->button202->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
+			this->button202->Font = (gcnew System::Drawing::Font(L"Neue Montreal Medium", 14.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->button202->ForeColor = System::Drawing::Color::White;
+			this->button202->Location = System::Drawing::Point(30, 79);
+			this->button202->Name = L"button202";
+			this->button202->Size = System::Drawing::Size(207, 44);
+			this->button202->TabIndex = 5;
+			this->button202->Text = L"Experiment 202";
+			this->button202->UseVisualStyleBackColor = false;
+			this->button202->Click += gcnew System::EventHandler(this, &courseForm::button202_Click);
+			// 
+			// button201
+			// 
+			this->button201->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(216)), static_cast<System::Int32>(static_cast<System::Byte>(38)),
+				static_cast<System::Int32>(static_cast<System::Byte>(39)));
+			this->button201->Cursor = System::Windows::Forms::Cursors::Hand;
+			this->button201->FlatAppearance->BorderSize = 0;
+			this->button201->FlatAppearance->MouseDownBackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(184)),
+				static_cast<System::Int32>(static_cast<System::Byte>(33)), static_cast<System::Int32>(static_cast<System::Byte>(33)));
+			this->button201->FlatAppearance->MouseOverBackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(184)),
+				static_cast<System::Int32>(static_cast<System::Byte>(33)), static_cast<System::Int32>(static_cast<System::Byte>(33)));
+			this->button201->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
+			this->button201->Font = (gcnew System::Drawing::Font(L"Neue Montreal Medium", 14.25F, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->button201->ForeColor = System::Drawing::Color::White;
+			this->button201->Location = System::Drawing::Point(30, 27);
+			this->button201->Name = L"button201";
+			this->button201->Size = System::Drawing::Size(207, 44);
+			this->button201->TabIndex = 4;
+			this->button201->Text = L"Experiment 201";
+			this->button201->UseVisualStyleBackColor = false;
+			this->button201->Click += gcnew System::EventHandler(this, &courseForm::button201_Click);
+			// 
 			// finalPanel
 			// 
 			this->finalPanel->BackColor = System::Drawing::Color::White;
+			this->finalPanel->Controls->Add(this->label3);
+			this->finalPanel->Controls->Add(this->qtyTb);
+			this->finalPanel->Controls->Add(this->label1);
+			this->finalPanel->Controls->Add(this->addtlCb);
 			this->finalPanel->Controls->Add(this->coursesConfirm);
 			this->finalPanel->Controls->Add(this->coursesExpt);
 			this->finalPanel->Controls->Add(this->sectionCb);
@@ -272,6 +429,50 @@ namespace MPLA104 {
 			this->finalPanel->Name = L"finalPanel";
 			this->finalPanel->Size = System::Drawing::Size(265, 476);
 			this->finalPanel->TabIndex = 1;
+			// 
+			// label3
+			// 
+			this->label3->AutoSize = true;
+			this->label3->Font = (gcnew System::Drawing::Font(L"Neue Montreal", 9.749999F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label3->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(216)), static_cast<System::Int32>(static_cast<System::Byte>(38)),
+				static_cast<System::Int32>(static_cast<System::Byte>(39)));
+			this->label3->Location = System::Drawing::Point(183, 300);
+			this->label3->Name = L"label3";
+			this->label3->Size = System::Drawing::Size(30, 16);
+			this->label3->TabIndex = 19;
+			this->label3->Text = L"Qty:";
+			// 
+			// qtyTb
+			// 
+			this->qtyTb->BorderStyle = System::Windows::Forms::BorderStyle::FixedSingle;
+			this->qtyTb->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->qtyTb->Location = System::Drawing::Point(186, 319);
+			this->qtyTb->Name = L"qtyTb";
+			this->qtyTb->Size = System::Drawing::Size(57, 21);
+			this->qtyTb->TabIndex = 18;
+			// 
+			// label1
+			// 
+			this->label1->AutoSize = true;
+			this->label1->Font = (gcnew System::Drawing::Font(L"Neue Montreal", 9.749999F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label1->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(216)), static_cast<System::Int32>(static_cast<System::Byte>(38)),
+				static_cast<System::Int32>(static_cast<System::Byte>(39)));
+			this->label1->Location = System::Drawing::Point(33, 300);
+			this->label1->Name = L"label1";
+			this->label1->Size = System::Drawing::Size(121, 16);
+			this->label1->TabIndex = 17;
+			this->label1->Text = L"Additional Materials:";
+			// 
+			// addtlCb
+			// 
+			this->addtlCb->FormattingEnabled = true;
+			this->addtlCb->Location = System::Drawing::Point(36, 319);
+			this->addtlCb->Name = L"addtlCb";
+			this->addtlCb->Size = System::Drawing::Size(127, 21);
+			this->addtlCb->TabIndex = 16;
 			// 
 			// coursesConfirm
 			// 
@@ -327,9 +528,9 @@ namespace MPLA104 {
 				static_cast<System::Int32>(static_cast<System::Byte>(39)));
 			this->courseMatList->Location = System::Drawing::Point(33, 165);
 			this->courseMatList->Name = L"courseMatList";
-			this->courseMatList->Size = System::Drawing::Size(39, 16);
+			this->courseMatList->Size = System::Drawing::Size(11, 128);
 			this->courseMatList->TabIndex = 13;
-			this->courseMatList->Text = L"NULL";
+			this->courseMatList->Text = L"-\r\n-\r\n-\r\n-\r\n-\r\n-\r\n-\r\n-";
 			// 
 			// label4
 			// 
@@ -413,6 +614,7 @@ namespace MPLA104 {
 			this->fiveLcs->Size = System::Drawing::Size(189, 44);
 			this->fiveLcs->TabIndex = 3;
 			this->fiveLcs->UseVisualStyleBackColor = false;
+			this->fiveLcs->Click += gcnew System::EventHandler(this, &courseForm::fiveLcs_Click);
 			// 
 			// coursesReturn
 			// 
@@ -435,6 +637,7 @@ namespace MPLA104 {
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->BackgroundImage = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"$this.BackgroundImage")));
 			this->ClientSize = System::Drawing::Size(800, 600);
+			this->Controls->Add(this->panel105);
 			this->Controls->Add(this->coursesReturn);
 			this->Controls->Add(this->fiveLcs);
 			this->Controls->Add(this->fourLcs);
@@ -447,13 +650,115 @@ namespace MPLA104 {
 			this->StartPosition = System::Windows::Forms::FormStartPosition::CenterScreen;
 			this->Text = L"courseForm";
 			this->exptaPanel->ResumeLayout(false);
+			this->panel105->ResumeLayout(false);
 			this->finalPanel->ResumeLayout(false);
 			this->finalPanel->PerformLayout();
 			this->ResumeLayout(false);
 
 		}
 #pragma endregion
+	public: String^ materialName;
+    public: System::Void InsertRequestedMaterial(int requestId, int requestedQuantity)
+    {
+        // SQL Server connection string
+        String^ connectionString = "Data Source=.\\sqlexpress;Initial Catalog=mpla104data;Integrated Security=True;Encrypt=False;TrustServerCertificate=True"; // Adjust as necessary
+
+        // Use the SqlConnection and SqlCommand classes
+        SqlConnection^ connection = gcnew SqlConnection(connectionString);
+
+        try {
+            // Open the connection
+            connection->Open();
+            materialName = addtlCb->Text;
+
+            // Check if both the textbox and the combobox are empty
+            if (String::IsNullOrEmpty(materialName) && String::IsNullOrEmpty(qtyTb->Text)) {
+                // Proceed with the program without inserting values to the table
+                return;
+            }
+
+            // Get the materialId based on the materialName
+            String^ getMaterialIdQuery = "SELECT materialId FROM material WHERE materialName = @materialName";
+            SqlCommand^ getMaterialIdCommand = gcnew SqlCommand(getMaterialIdQuery, connection);
+            getMaterialIdCommand->Parameters->AddWithValue("@materialName", materialName);
+            int materialId = Convert::ToInt32(getMaterialIdCommand->ExecuteScalar());
+
+            // SQL command to insert a new record into the requested_materials table
+            String^ insertQuery = "INSERT INTO request_materials (requestId, materialId, requestedQuantity) VALUES (@requestId, @materialId, @requestedQuantity)";
+
+            // Create a SqlCommand object
+            SqlCommand^ insertCommand = gcnew SqlCommand(insertQuery, connection);
+
+            // Parameters for the SQL command
+            insertCommand->Parameters->AddWithValue("@requestId", requestId);
+            insertCommand->Parameters->AddWithValue("@materialId", materialId);
+            insertCommand->Parameters->AddWithValue("@requestedQuantity", requestedQuantity);
+
+            // Execute the command
+            int rowsAffected = insertCommand->ExecuteNonQuery();
+
+        }
+        catch (SqlException^ ex) {
+            // Handle SQL exceptions
+            MessageBox::Show("An error occurred: " + ex->Message);
+        }
+        catch (Exception^ ex) {
+            // Handle other exceptions
+            MessageBox::Show("An error occurred: " + ex->Message);
+        }
+        finally {
+            // Ensure the connection is closed
+            if (connection->State == ConnectionState::Open) {
+                connection->Close();
+            }
+        }
+    }
+	public: void comboQuery() {
+		String^ connectionString = "Data Source=.\\sqlexpress;Initial Catalog=mpla104data;Integrated Security=True;Encrypt=False;TrustServerCertificate=True"; // Adjust as necessary
+
+		// Use the SqlConnection and SqlCommand classes
+		SqlConnection^ connection = gcnew SqlConnection(connectionString);
+
+		try {
+			// Open the connection
+			connection->Open();
+
+			String^ sql = "SELECT materialName from material";
+
+			SqlCommand^ command = gcnew SqlCommand(sql, connection);
+
+			SqlDataReader^ reader = command->ExecuteReader();
+
+			while(reader->Read()){
+				String^ mtlName = reader->GetString(0);
+				addtlCb->Items->Add(mtlName);
+			}
+
+			reader->Close();
+		}
+		catch (SqlException^ ex) {
+			// Handle SQL exceptions
+			MessageBox::Show("An error occurred: " + ex->Message);
+		}
+		catch (Exception^ ex) {
+			// Handle other exceptions
+			MessageBox::Show("An error occurred: " + ex->Message);
+		}
+		finally {
+			// Ensure the connection is closed
+			if (connection->State == ConnectionState::Open) {
+				connection->Close();
+			}
+		}
+	}
 	public: int curExpt;
+		  String^ mtlName;
+	public: int iterateId(SqlConnection^ connection){
+		String^ getMaxIdSql = "SELECT COALESCE(MAX(requestId), 0) + 1 FROM requests";
+		SqlCommand^ command = gcnew SqlCommand(getMaxIdSql, connection);
+		Object^ result = command->ExecuteScalar();
+		return Convert::ToInt32(result);
+	}
 	public: void CheckSectionAccess() {
 		DateTime now = DateTime::Now;
 		int hour = now.Hour;
@@ -543,6 +848,7 @@ private: System::Void coursesReturn_Click(System::Object^ sender, System::EventA
 	this->Close();
 }
 private: System::Void fourLcs_Click(System::Object^ sender, System::EventArgs^ e) {
+	panel105->Hide();
 	exptaPanel->Show();
 }
 
@@ -565,12 +871,15 @@ private: System::Void coursesConfirm_Click(System::Object^ sender, System::Event
 		connection->Open();
 
 		// SQL command to insert a new request into the requests table
-		String^ sql = "INSERT INTO requests (userId, exptId, requestDate, approved, section) VALUES (@userId, @exptId, @requestDate, @approved, @section)";
+		String^ sql = "INSERT INTO requests (requestId, userId, exptId, requestDate, approved, section) VALUES (@requestId, @userId, @exptId, @requestDate, @approved, @section)";
 
 		// Create a SqlCommand object
 		SqlCommand^ command = gcnew SqlCommand(sql, connection);
 
+		int nextRequestId = iterateId(connection);
+        
 		// Parameters for the SQL command
+		command->Parameters->AddWithValue("@requestId", nextRequestId);
 		command->Parameters->AddWithValue("@userId", uId);
 		command->Parameters->AddWithValue("@exptId", curExpt);
 		command->Parameters->AddWithValue("@requestDate", DateTime::Now); // Use current date and time
@@ -579,7 +888,12 @@ private: System::Void coursesConfirm_Click(System::Object^ sender, System::Event
 
 		// Execute the command
 		int rowsAffected = command->ExecuteNonQuery();
-
+		
+		if (qtyTb->Text != "0") {
+			int quantityRequested = Convert::ToInt32(qtyTb->Text);
+			InsertRequestedMaterial(nextRequestId, quantityRequested);
+		}
+		
 		// Optionally show a message indicating success
 		if (rowsAffected > 0) {
 			MessageBox::Show("Request submitted successfully!");
@@ -608,6 +922,7 @@ private: System::Void button1_Click(System::Object^ sender, System::EventArgs^ e
 	coursesExpt->Text = "Experiment Code: 101";
 	courseMatList->Text = "";
 	sqlExpt();
+	comboQuery();
 
 	finalPanel->Show();
 }
@@ -616,6 +931,7 @@ private: System::Void exptb_Click(System::Object^ sender, System::EventArgs^ e) 
 	coursesExpt->Text = "Experiment Code: 102";
 	courseMatList->Text = "";
 	sqlExpt();
+	comboQuery();
 
 	finalPanel->Show();
 }
@@ -625,6 +941,7 @@ private: System::Void exptac_Click(System::Object^ sender, System::EventArgs^ e)
 	coursesExpt->Text = "Experiment Code: 103";
 	courseMatList->Text = "";
 	sqlExpt();
+	comboQuery();
 
 	finalPanel->Show();
 }
@@ -633,6 +950,7 @@ private: System::Void exptad_Click(System::Object^ sender, System::EventArgs^ e)
 	coursesExpt->Text = "Experiment Code: 104";
 	courseMatList->Text = "";
 	sqlExpt();
+	comboQuery();
 
 	finalPanel->Show();
 }
@@ -641,6 +959,56 @@ private: System::Void exptae_Click(System::Object^ sender, System::EventArgs^ e)
 	coursesExpt->Text = "Experiment Code: 105";
 	courseMatList->Text = "";
 	sqlExpt();
+	comboQuery();
+
+	finalPanel->Show();
+}
+private: System::Void fiveLcs_Click(System::Object^ sender, System::EventArgs^ e) {
+	exptaPanel->Hide();
+	panel105->Show();
+}
+private: System::Void button201_Click(System::Object^ sender, System::EventArgs^ e) {
+	curExpt = 201;
+	coursesExpt->Text = "Experiment Code: 201";
+	courseMatList->Text = "";
+	sqlExpt();
+	comboQuery();
+
+	finalPanel->Show();
+}
+private: System::Void button202_Click(System::Object^ sender, System::EventArgs^ e) {
+	curExpt = 202;
+	coursesExpt->Text = "Experiment Code: 202";
+	courseMatList->Text = "";
+	sqlExpt();
+	comboQuery();
+
+	finalPanel->Show();
+}
+private: System::Void button203_Click(System::Object^ sender, System::EventArgs^ e) {
+	curExpt = 203;
+	coursesExpt->Text = "Experiment Code: 203";
+	courseMatList->Text = "";
+	sqlExpt();
+	comboQuery();
+
+	finalPanel->Show();
+}
+private: System::Void button204_Click(System::Object^ sender, System::EventArgs^ e) {
+	curExpt = 204;
+	coursesExpt->Text = "Experiment Code: 204";
+	courseMatList->Text = "";
+	sqlExpt();
+	comboQuery();
+
+	finalPanel->Show();
+}
+private: System::Void button205_Click(System::Object^ sender, System::EventArgs^ e) {		
+	curExpt = 205;
+	coursesExpt->Text = "Experiment Code: 205";
+	courseMatList->Text = "";
+	sqlExpt();
+	comboQuery();
 
 	finalPanel->Show();
 }

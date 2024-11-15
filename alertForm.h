@@ -19,10 +19,12 @@ namespace MPLA104 {
 		alertForm(void)
 		{
 			InitializeComponent();
-			
+
 			sqlQueue();
 			historyLabel->Text = "";
 			sqlHistory();
+			addtlLbl->Text = "";
+			sqlAddtl();
 			queuedLabel->Text = "User ID: " + uId + "\nExperiment ID: " + eId + "\nRequest Date: " + rDate + "\nSection: " + section;
 		}
 
@@ -43,6 +45,9 @@ namespace MPLA104 {
 	private: System::Windows::Forms::Button^ adminAlertReturn;
 	private: System::Windows::Forms::Label^ historyLabel;
 	private: System::Windows::Forms::Panel^ adminHistory;
+	private: System::Windows::Forms::Label^ label1;
+	private: System::Windows::Forms::Label^ addtlLbl;
+
 
 
 
@@ -52,7 +57,7 @@ namespace MPLA104 {
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
-		System::ComponentModel::Container ^components;
+		System::ComponentModel::Container^ components;
 
 #pragma region Windows Form Designer generated code
 		/// <summary>
@@ -68,6 +73,8 @@ namespace MPLA104 {
 			this->adminAlertReturn = (gcnew System::Windows::Forms::Button());
 			this->historyLabel = (gcnew System::Windows::Forms::Label());
 			this->adminHistory = (gcnew System::Windows::Forms::Panel());
+			this->label1 = (gcnew System::Windows::Forms::Label());
+			this->addtlLbl = (gcnew System::Windows::Forms::Label());
 			this->adminHistory->SuspendLayout();
 			this->SuspendLayout();
 			// 
@@ -94,7 +101,7 @@ namespace MPLA104 {
 			this->adminAccept->FlatAppearance->MouseDownBackColor = System::Drawing::Color::Transparent;
 			this->adminAccept->FlatAppearance->MouseOverBackColor = System::Drawing::Color::Transparent;
 			this->adminAccept->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
-			this->adminAccept->Location = System::Drawing::Point(62, 260);
+			this->adminAccept->Location = System::Drawing::Point(62, 432);
 			this->adminAccept->Name = L"adminAccept";
 			this->adminAccept->Size = System::Drawing::Size(127, 41);
 			this->adminAccept->TabIndex = 6;
@@ -109,7 +116,7 @@ namespace MPLA104 {
 			this->adminDeny->FlatAppearance->MouseDownBackColor = System::Drawing::Color::Transparent;
 			this->adminDeny->FlatAppearance->MouseOverBackColor = System::Drawing::Color::Transparent;
 			this->adminDeny->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
-			this->adminDeny->Location = System::Drawing::Point(219, 260);
+			this->adminDeny->Location = System::Drawing::Point(219, 433);
 			this->adminDeny->Name = L"adminDeny";
 			this->adminDeny->Size = System::Drawing::Size(127, 41);
 			this->adminDeny->TabIndex = 7;
@@ -156,12 +163,42 @@ namespace MPLA104 {
 			this->adminHistory->Size = System::Drawing::Size(309, 389);
 			this->adminHistory->TabIndex = 10;
 			// 
+			// label1
+			// 
+			this->label1->AutoSize = true;
+			this->label1->BackColor = System::Drawing::Color::Transparent;
+			this->label1->Font = (gcnew System::Drawing::Font(L"Neue Montreal", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label1->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(216)), static_cast<System::Int32>(static_cast<System::Byte>(39)),
+				static_cast<System::Int32>(static_cast<System::Byte>(38)));
+			this->label1->Location = System::Drawing::Point(58, 253);
+			this->label1->Name = L"label1";
+			this->label1->Size = System::Drawing::Size(144, 19);
+			this->label1->TabIndex = 11;
+			this->label1->Text = L"Additional Materials:";
+			// 
+			// addtlLbl
+			// 
+			this->addtlLbl->AutoSize = true;
+			this->addtlLbl->BackColor = System::Drawing::Color::Transparent;
+			this->addtlLbl->Font = (gcnew System::Drawing::Font(L"Neue Montreal", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->addtlLbl->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(216)), static_cast<System::Int32>(static_cast<System::Byte>(39)),
+				static_cast<System::Int32>(static_cast<System::Byte>(38)));
+			this->addtlLbl->Location = System::Drawing::Point(58, 282);
+			this->addtlLbl->Name = L"addtlLbl";
+			this->addtlLbl->Size = System::Drawing::Size(49, 19);
+			this->addtlLbl->TabIndex = 12;
+			this->addtlLbl->Text = L"None.";
+			// 
 			// alertForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->BackgroundImage = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"$this.BackgroundImage")));
 			this->ClientSize = System::Drawing::Size(800, 600);
+			this->Controls->Add(this->addtlLbl);
+			this->Controls->Add(this->label1);
 			this->Controls->Add(this->adminHistory);
 			this->Controls->Add(this->adminAlertReturn);
 			this->Controls->Add(this->adminDeny);
@@ -180,6 +217,64 @@ namespace MPLA104 {
 
 		}
 #pragma endregion
+	public: void sqlAddtl()
+	{
+		String^ connectionString = "Data Source=.\\sqlexpress;Initial Catalog=mpla104data;Integrated Security=True;Encrypt=False;TrustServerCertificate=True"; // Adjust as necessary
+
+		// Use the SqlConnection and SqlCommand classes
+		SqlConnection^ connection = gcnew SqlConnection(connectionString);
+
+		try {
+			// Open connection
+			connection->Open();
+
+			// SQL query to fetch materialName and requestedQuantity
+			String^ sql = "SELECT m.materialName, rm.requestedQuantity FROM request_materials rm "
+				"INNER JOIN material m ON rm.materialId = m.materialId "
+				"WHERE rm.requestId = @requestId";
+
+			SqlCommand^ command = gcnew SqlCommand(sql, connection);
+			command->Parameters->AddWithValue("@requestId", rId); // Pass the specific requestId
+
+			SqlDataReader^ reader = command->ExecuteReader();
+
+			// Clear the label text before appending new data
+			addtlLbl->Text = "";
+
+			// Flag to check if any data is found
+			bool dataFound = false;
+
+			// Check if data is returned
+			while (reader->Read()) {
+				String^ materialName = reader->GetString(0); // materialName is the first column
+				int requestedQuantity = reader->GetInt32(1); // requestedQuantity is the second column
+
+				// Check if materialName and requestedQuantity are valid
+				if (materialName != nullptr && !String::IsNullOrEmpty(materialName) && !reader->IsDBNull(1)) {
+					// Append the retrieved data to the label
+					addtlLbl->Text += materialName + " - " + requestedQuantity + "\n";
+					dataFound = true;
+				}
+			}
+
+			// If no data was found, you can optionally set a default message
+			if (!dataFound) {
+				addtlLbl->Text = "No materials found for this request ID.";
+			}
+
+		}
+		catch (SqlException^ ex) {
+			MessageBox::Show("An error occurred: " + ex->Message);
+		}
+		finally {
+			// Close the connection
+			if (connection->State == ConnectionState::Open) {
+				connection->Close();
+			}
+		}
+	}
+
+
 	public:
 		int rId;
 		String^ uId;
@@ -290,21 +385,74 @@ private: System::Void adminAccept_Click(System::Object^ sender, System::EventArg
 		// Open the connection
 		connection->Open();
 
-		// SQL command to update the assessed column to 1
-		String^ sql = "UPDATE requests SET assessed = 1, approved = 1 WHERE assessed = 0 AND userId = '" + uId + "' AND requestId = '" + rId + "'";
+		// Check if any requested quantities exceed available quantities
+		String^ checkQtySql = "SELECT m.materialId, m.quantityAvailable, COALESCE(SUM(rm.requestedQuantity), 0) AS totalRequested "
+			"FROM material m "
+			"LEFT JOIN request_materials rm ON m.materialId = rm.materialId AND rm.requestId = @requestId "
+			"WHERE m.materialId IN (SELECT materialId FROM expt_material WHERE exptId = @exptId) "
+			"GROUP BY m.materialId, m.quantityAvailable";
 
-		// Create a SqlCommand object
-		SqlCommand^ command = gcnew SqlCommand(sql, connection);
+		SqlCommand^ checkQtyCommand = gcnew SqlCommand(checkQtySql, connection);
+		checkQtyCommand->Parameters->AddWithValue("@requestId", rId); // Pass the specific requestId
+		checkQtyCommand->Parameters->AddWithValue("@exptId", eId); // Pass the experimentId
 
-		// Execute the command
-		command->ExecuteNonQuery();
+		SqlDataReader^ reader = checkQtyCommand->ExecuteReader();
+		bool canAcceptRequest = true;
 
-		// Show a success message
-		MessageBox::Show("Request accepted successfully.");
+		// Iterate through the results to check for quantity violations
+		while (reader->Read()) {
+			int materialId = reader->GetInt32(0);
+			int availableQty = reader->GetInt32(1);
+			int requestedQty = reader->GetInt32(2);
 
-		// Update the queuedLabel with the new request
-		sqlQueue();
-		queuedLabel->Text = "User ID: " + uId + "\nExperiment ID: " + eId + "\nRequest Date: " + rDate + "\nSection: " + section;
+			if (requestedQty > availableQty) {
+				canAcceptRequest = false;
+				MessageBox::Show("Request cannot be accepted. Requested quantity for material ID " + materialId.ToString() +
+					" exceeds available quantity.");
+				break;
+			}
+		}
+
+		// Close the reader after checking quantities
+		reader->Close();
+
+		// If the request is valid, proceed with updating the request and deducting material quantities
+		if (canAcceptRequest) {
+			// SQL command to update the assessed column to 1
+			String^ sql = "UPDATE requests SET assessed = 1, approved = 1 WHERE assessed = 0 AND userId = @userId AND requestId = @requestId";
+
+			// Create a SqlCommand object
+			SqlCommand^ command = gcnew SqlCommand(sql, connection);
+			command->Parameters->AddWithValue("@userId", uId);
+			command->Parameters->AddWithValue("@requestId", rId);
+
+			// Execute the command
+			command->ExecuteNonQuery();
+
+			// Deduct material quantities from expt_materials table to the materials table quantityAvailable column
+			String^ deductSql = "UPDATE m "
+				"SET m.quantityAvailable = m.quantityAvailable - em.defaultQuantity - COALESCE(rm.requestedQuantity, 0) "
+				"FROM material m "
+				"INNER JOIN expt_material em ON m.materialId = em.materialId "
+				"LEFT JOIN request_materials rm ON m.materialId = rm.materialId AND rm.requestId = @requestId "
+				"WHERE em.exptId = @exptId AND m.materialId = em.materialId";
+
+			// Create a new SqlCommand object for deducting material quantities
+			SqlCommand^ deductCommand = gcnew SqlCommand(deductSql, connection);
+			deductCommand->Parameters->AddWithValue("@requestId", rId);
+			deductCommand->Parameters->AddWithValue("@exptId", eId);
+
+			// Execute the deduct command
+			deductCommand->ExecuteNonQuery();
+
+			// Show a success message
+			MessageBox::Show("Request accepted successfully.");
+
+			// Update the queuedLabel with the new request
+			sqlQueue();
+			sqlAddtl();
+			queuedLabel->Text = "User ID: " + uId + "\nExperiment ID: " + eId + "\nRequest Date: " + rDate + "\nSection: " + section;
+		}
 	}
 	catch (SqlException^ ex) {
 		// Handle SQL exceptions
@@ -321,6 +469,7 @@ private: System::Void adminAccept_Click(System::Object^ sender, System::EventArg
 		}
 	}
 }
+
 private: System::Void adminDeny_Click(System::Object^ sender, System::EventArgs^ e) {
             
 	String^ connectionString = "Data Source=.\\sqlexpress;Initial Catalog=mpla104data;Integrated Security=True;Encrypt=False;TrustServerCertificate=True"; // Adjust as necessary
@@ -346,6 +495,7 @@ private: System::Void adminDeny_Click(System::Object^ sender, System::EventArgs^
 
 		// Update the queuedLabel with the new request
 		sqlQueue();
+		sqlAddtl();
 		queuedLabel->Text = "User ID: " + uId + "\nExperiment ID: " + eId + "\nRequest Date: " + rDate + "\nSection: " + section;
 	}
 	catch (SqlException^ ex) {
