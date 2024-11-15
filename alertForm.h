@@ -459,6 +459,7 @@ private: System::Void adminAccept_Click(System::Object^ sender, System::EventArg
 	}
 }
 
+
 private: System::Void adminDeny_Click(System::Object^ sender, System::EventArgs^ e) {
             
 	String^ connectionString = "Data Source=.\\sqlexpress;Initial Catalog=mpla104data;Integrated Security=True;Encrypt=False;TrustServerCertificate=True"; // Adjust as necessary
