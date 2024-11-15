@@ -25,7 +25,7 @@ namespace MPLA104 {
 			sqlHistory();
 			addtlLbl->Text = "";
 			sqlAddtl();
-			queuedLabel->Text = "User ID: " + uId + "\nExperiment ID: " + eId + "\nRequest Date: " + rDate + "\nSection: " + section;
+			queuedLabel->Text = "Request ID: " + rId + "\nUser ID: " + uId + "\nExperiment ID: " + eId + "\nRequest Date: " + rDate + "\nSection: " + section;
 		}
 
 	protected:
@@ -386,66 +386,58 @@ private: System::Void adminAccept_Click(System::Object^ sender, System::EventArg
 		connection->Open();
 
 		// Check if any requested quantities exceed available quantities
-		String^ checkQtySql = "SELECT m.materialId, m.quantityAvailable, COALESCE(SUM(rm.requestedQuantity), 0) AS totalRequested "
+		String^ checkQtySql = "SELECT m.materialId, m.quantityAvailable, "
+			"COALESCE(em.defaultQuantity, 0) + COALESCE(SUM(rm.requestedQuantity), 0) AS totalDeduction "
 			"FROM material m "
+			"LEFT JOIN expt_material em ON m.materialId = em.materialId AND em.exptId = @exptId "
 			"LEFT JOIN request_materials rm ON m.materialId = rm.materialId AND rm.requestId = @requestId "
 			"WHERE m.materialId IN (SELECT materialId FROM expt_material WHERE exptId = @exptId) "
-			"GROUP BY m.materialId, m.quantityAvailable";
+			"GROUP BY m.materialId, m.quantityAvailable, em.defaultQuantity";
 
 		SqlCommand^ checkQtyCommand = gcnew SqlCommand(checkQtySql, connection);
-		checkQtyCommand->Parameters->AddWithValue("@requestId", rId); // Pass the specific requestId
-		checkQtyCommand->Parameters->AddWithValue("@exptId", eId); // Pass the experimentId
+		checkQtyCommand->Parameters->AddWithValue("@requestId", rId);
+		checkQtyCommand->Parameters->AddWithValue("@exptId", eId);
 
 		SqlDataReader^ reader = checkQtyCommand->ExecuteReader();
 		bool canAcceptRequest = true;
 
-		// Iterate through the results to check for quantity violations
 		while (reader->Read()) {
 			int materialId = reader->GetInt32(0);
 			int availableQty = reader->GetInt32(1);
-			int requestedQty = reader->GetInt32(2);
+			int totalDeduction = reader->GetInt32(2);
 
-			if (requestedQty > availableQty) {
+			if (totalDeduction > availableQty) {
 				canAcceptRequest = false;
-				MessageBox::Show("Request cannot be accepted. Requested quantity for material ID " + materialId.ToString() +
-					" exceeds available quantity.");
+				MessageBox::Show("Request cannot be accepted. Material ID " + materialId.ToString() +
+					" requires more than available stock.");
 				break;
 			}
 		}
 
-		// Close the reader after checking quantities
 		reader->Close();
 
-		// If the request is valid, proceed with updating the request and deducting material quantities
 		if (canAcceptRequest) {
-			// SQL command to update the assessed column to 1
-			String^ sql = "UPDATE requests SET assessed = 1, approved = 1 WHERE assessed = 0 AND userId = @userId AND requestId = @requestId";
+			// Update request to set assessed and approved
+			String^ updateRequestSql = "UPDATE requests SET assessed = 1, approved = 1 WHERE assessed = 0 AND userId = @userId AND requestId = @requestId";
+			SqlCommand^ updateRequestCommand = gcnew SqlCommand(updateRequestSql, connection);
+			updateRequestCommand->Parameters->AddWithValue("@userId", uId);
+			updateRequestCommand->Parameters->AddWithValue("@requestId", rId);
+			updateRequestCommand->ExecuteNonQuery();
 
-			// Create a SqlCommand object
-			SqlCommand^ command = gcnew SqlCommand(sql, connection);
-			command->Parameters->AddWithValue("@userId", uId);
-			command->Parameters->AddWithValue("@requestId", rId);
-
-			// Execute the command
-			command->ExecuteNonQuery();
-
-			// Deduct material quantities from expt_materials table to the materials table quantityAvailable column
+			// Deduct material quantities
 			String^ deductSql = "UPDATE m "
-				"SET m.quantityAvailable = m.quantityAvailable - em.defaultQuantity - COALESCE(rm.requestedQuantity, 0) "
+				"SET m.quantityAvailable = m.quantityAvailable - (COALESCE(em.defaultQuantity, 0) + COALESCE(rm.requestedQuantity, 0)) "
 				"FROM material m "
-				"INNER JOIN expt_material em ON m.materialId = em.materialId "
+				"LEFT JOIN expt_material em ON m.materialId = em.materialId AND em.exptId = @exptId "
 				"LEFT JOIN request_materials rm ON m.materialId = rm.materialId AND rm.requestId = @requestId "
-				"WHERE em.exptId = @exptId AND m.materialId = em.materialId";
+				"WHERE m.materialId IN (SELECT materialId FROM expt_material WHERE exptId = @exptId)";
 
-			// Create a new SqlCommand object for deducting material quantities
 			SqlCommand^ deductCommand = gcnew SqlCommand(deductSql, connection);
 			deductCommand->Parameters->AddWithValue("@requestId", rId);
 			deductCommand->Parameters->AddWithValue("@exptId", eId);
-
-			// Execute the deduct command
 			deductCommand->ExecuteNonQuery();
 
-			// Show a success message
+			// Show success message
 			MessageBox::Show("Request accepted successfully.");
 
 			// Update the queuedLabel with the new request
@@ -455,15 +447,12 @@ private: System::Void adminAccept_Click(System::Object^ sender, System::EventArg
 		}
 	}
 	catch (SqlException^ ex) {
-		// Handle SQL exceptions
 		MessageBox::Show("An error occurred: " + ex->Message);
 	}
 	catch (Exception^ ex) {
-		// Handle other exceptions
 		MessageBox::Show("An error occurred: " + ex->Message);
 	}
 	finally {
-		// Ensure the connection is closed
 		if (connection->State == ConnectionState::Open) {
 			connection->Close();
 		}
@@ -496,7 +485,7 @@ private: System::Void adminDeny_Click(System::Object^ sender, System::EventArgs^
 		// Update the queuedLabel with the new request
 		sqlQueue();
 		sqlAddtl();
-		queuedLabel->Text = "User ID: " + uId + "\nExperiment ID: " + eId + "\nRequest Date: " + rDate + "\nSection: " + section;
+		queuedLabel->Text = "Request ID: " + rId + "\nUser ID: " + uId + "\nExperiment ID: " + eId + "\nRequest Date: " + rDate + "\nSection: " + section;
 	}
 	catch (SqlException^ ex) {
 		// Handle SQL exceptions

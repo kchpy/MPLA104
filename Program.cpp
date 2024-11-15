@@ -17,8 +17,8 @@ void main(array<String^>^ args)
 
 	while (true) {
 		MPLA104::loginForm loginForm;
-	loginForm.ShowDialog();
-	User^ user = loginForm.user;
+		loginForm.ShowDialog();
+		user = loginForm.user;
 
 		if (loginForm.switchToRegister) {
 			MPLA104::registerForm registerForm;
@@ -36,19 +36,19 @@ void main(array<String^>^ args)
 				continue;
 			}
 		}
-		else {
-			user = loginForm.user;
-			break;
+        else {
+            user = loginForm.user;
+            break;
+        }
 		}
-		}
-	if (user != nullptr) {
+    if (user != nullptr) {
         if (user->isAdmin == 1) {
             MPLA104::adminDash adminDash(user);
             Application::Run(% adminDash);
-	}
-	else {
+        }
+        else {
             MPLA104::dashboardForm dashboardForm(user);
             Application::Run(% dashboardForm);
         }
-	}
+    }
 }

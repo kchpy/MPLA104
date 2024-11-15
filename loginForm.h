@@ -63,7 +63,7 @@ namespace MPLA104 {
 		void InitializeComponent(void)
 		{
 			System::ComponentModel::ComponentResourceManager^ resources = (gcnew System::ComponentModel::ComponentResourceManager(loginForm::typeid));
-			this->pictureBox1 = (gcnew System::Windows::Forms::PictureBox());
+			/// this->pictureBox1 = (gcnew System::Windows::Forms::PictureBox());
 			this->tbId = (gcnew System::Windows::Forms::TextBox());
 			this->tbPk = (gcnew System::Windows::Forms::TextBox());
 			this->btnProceed = (gcnew System::Windows::Forms::Button());
@@ -73,7 +73,7 @@ namespace MPLA104 {
 			// 
 			// pictureBox1
 			// 
-			this->pictureBox1->Anchor = System::Windows::Forms::AnchorStyles::None;
+			/*this->pictureBox1->Anchor = System::Windows::Forms::AnchorStyles::None;
 			this->pictureBox1->BackgroundImage = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"pictureBox1.BackgroundImage")));
 			this->pictureBox1->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Center;
 			this->pictureBox1->Location = System::Drawing::Point(229, 38);
@@ -82,7 +82,7 @@ namespace MPLA104 {
 			this->pictureBox1->Name = L"pictureBox1";
 			this->pictureBox1->Size = System::Drawing::Size(320, 460);
 			this->pictureBox1->TabIndex = 0;
-			this->pictureBox1->TabStop = false;
+			this->pictureBox1->TabStop = false;*/
 			// 
 			// tbId
 			// 
@@ -171,7 +171,7 @@ namespace MPLA104 {
 			this->Name = L"loginForm";
 			this->StartPosition = System::Windows::Forms::FormStartPosition::CenterScreen;
 			this->Text = L"loginForm";
-			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->EndInit();
+			/*(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->EndInit();*/
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
@@ -206,7 +206,7 @@ private: System::Void btnProceed_Click(System::Object^ sender, System::EventArgs
 				user->userId = reader->GetString(2);
 				user->userEmail = reader->GetString(3);
 				user->userPasskey = reader->GetString(4);
-			user->isAdmin = reader->GetBoolean(5);
+				user->isAdmin = reader->GetBoolean(5);
 
 				this->Close();
 			}
