@@ -305,7 +305,7 @@ namespace MPLA104 {
 			// Open the connection
 			connection->Open();
 
-			String^ sql = "SELECT materialName from material";
+			String^ sql = "SELECT m.materialName from material m WHERE m.isActive = 1";
 
 			SqlCommand^ command = gcnew SqlCommand(sql, connection);
 
@@ -339,7 +339,7 @@ namespace MPLA104 {
 		String^ connectionString = "Data Source=.\\sqlexpress;Initial Catalog=mpla104data;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
 
 		// SQL query to fetch data from the 'material' table
-		String^ query = "SELECT materialId, materialName, quantityAvailable FROM material";
+		String^ query = "SELECT m.materialId, m.materialName, m.quantityAvailable FROM material m WHERE m.isActive = 1";
 
 		// Initialize a new SqlConnection
 		SqlConnection^ connection = gcnew SqlConnection(connectionString);

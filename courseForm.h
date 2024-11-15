@@ -678,7 +678,7 @@ namespace MPLA104 {
             }
 
             // Get the materialId based on the materialName
-            String^ getMaterialIdQuery = "SELECT materialId FROM material WHERE materialName = @materialName";
+            String^ getMaterialIdQuery = "SELECT materialId FROM material WHERE materialName = @materialName AND isActive = 1";
             SqlCommand^ getMaterialIdCommand = gcnew SqlCommand(getMaterialIdQuery, connection);
             getMaterialIdCommand->Parameters->AddWithValue("@materialName", materialName);
             int materialId = Convert::ToInt32(getMaterialIdCommand->ExecuteScalar());
@@ -800,7 +800,7 @@ namespace MPLA104 {
 			String^ sql = "SELECT m.materialId, m.materialName, em.defaultQuantity "
 				"FROM expt_material em "
 				"JOIN material m ON em.materialId = m.materialId "
-				"WHERE em.exptId = @exptId";
+				"WHERE em.exptId = @exptId AND m.isActive = 1";
 
 			// Create a SqlCommand object
 			SqlCommand^ command = gcnew SqlCommand(sql, connection);
