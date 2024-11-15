@@ -11,12 +11,14 @@ void main(array<String^>^ args)
 {
 	Application::EnableVisualStyles();
 	Application::SetCompatibleTextRenderingDefault(false);
+	MPLA104::loginForm loginForm;
 
 	User^ user = nullptr;
 
 	while (true) {
 		MPLA104::loginForm loginForm;
-		loginForm.ShowDialog();
+	loginForm.ShowDialog();
+	User^ user = loginForm.user;
 
 		if (loginForm.switchToRegister) {
 			MPLA104::registerForm registerForm;
@@ -39,14 +41,14 @@ void main(array<String^>^ args)
 			break;
 		}
 		}
-    if (user != nullptr) {
+	if (user != nullptr) {
         if (user->isAdmin == 1) {
             MPLA104::adminDash adminDash(user);
             Application::Run(% adminDash);
-        }
-        else {
+	}
+	else {
             MPLA104::dashboardForm dashboardForm(user);
             Application::Run(% dashboardForm);
         }
-    }
 	}
+}

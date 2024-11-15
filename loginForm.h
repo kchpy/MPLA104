@@ -63,12 +63,26 @@ namespace MPLA104 {
 		void InitializeComponent(void)
 		{
 			System::ComponentModel::ComponentResourceManager^ resources = (gcnew System::ComponentModel::ComponentResourceManager(loginForm::typeid));
+			this->pictureBox1 = (gcnew System::Windows::Forms::PictureBox());
 			this->tbId = (gcnew System::Windows::Forms::TextBox());
 			this->tbPk = (gcnew System::Windows::Forms::TextBox());
 			this->btnProceed = (gcnew System::Windows::Forms::Button());
 			this->btnExit = (gcnew System::Windows::Forms::Button());
 			this->lblRegis = (gcnew System::Windows::Forms::LinkLabel());
 			this->SuspendLayout();
+			// 
+			// pictureBox1
+			// 
+			this->pictureBox1->Anchor = System::Windows::Forms::AnchorStyles::None;
+			this->pictureBox1->BackgroundImage = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"pictureBox1.BackgroundImage")));
+			this->pictureBox1->BackgroundImageLayout = System::Windows::Forms::ImageLayout::Center;
+			this->pictureBox1->Location = System::Drawing::Point(229, 38);
+			this->pictureBox1->MaximumSize = System::Drawing::Size(320, 460);
+			this->pictureBox1->MinimumSize = System::Drawing::Size(320, 460);
+			this->pictureBox1->Name = L"pictureBox1";
+			this->pictureBox1->Size = System::Drawing::Size(320, 460);
+			this->pictureBox1->TabIndex = 0;
+			this->pictureBox1->TabStop = false;
 			// 
 			// tbId
 			// 
@@ -157,6 +171,7 @@ namespace MPLA104 {
 			this->Name = L"loginForm";
 			this->StartPosition = System::Windows::Forms::FormStartPosition::CenterScreen;
 			this->Text = L"loginForm";
+			(cli::safe_cast<System::ComponentModel::ISupportInitialize^>(this->pictureBox1))->EndInit();
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
@@ -165,42 +180,42 @@ namespace MPLA104 {
 	public: User^ user = nullptr;
 
 private: System::Void btnProceed_Click(System::Object^ sender, System::EventArgs^ e) {
-	String^ id = this->tbId->Text;
-	String^ pk = this->tbPk->Text;
+		String^ id = this->tbId->Text;
+		String^ pk = this->tbPk->Text;
 
 	if (id->Length == 0 || pk->Length == 0) {
-		MessageBox::Show("Please fill in all fields", "Error", MessageBoxButtons::OK, MessageBoxIcon::Error);
-		return;
-	}
+			MessageBox::Show("Please fill in all fields", "Error", MessageBoxButtons::OK, MessageBoxIcon::Error);
+			return;
+		}
 
-	try {
+		try {
 		String^ connString = "Data Source=.\\sqlexpress;Initial Catalog=mpla104data;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
-		SqlConnection sqlConn(connString);
-		sqlConn.Open();
+			SqlConnection sqlConn(connString);
+			sqlConn.Open();
 
-		String^ sqlQuery = "SELECT * FROM users WHERE userId = @userId AND userPasskey = @userPasskey;";
-		SqlCommand command(sqlQuery, % sqlConn);
-		command.Parameters->AddWithValue("@userId", id);
-		command.Parameters->AddWithValue("@userPasskey", pk);
+			String^ sqlQuery = "SELECT * FROM users WHERE userId = @userId AND userPasskey = @userPasskey;";
+			SqlCommand command(sqlQuery, % sqlConn);
+			command.Parameters->AddWithValue("@userId", id);
+			command.Parameters->AddWithValue("@userPasskey", pk);
 
-		SqlDataReader^ reader = command.ExecuteReader();
+			SqlDataReader^ reader = command.ExecuteReader();
 		if (reader->Read()) {
-			user = gcnew User;
-			user->id = reader->GetInt32(0);
-			user->name = reader->GetString(1);
-			user->userId = reader->GetString(2);
-			user->userEmail = reader->GetString(3);
-			user->userPasskey = reader->GetString(4);
+				user = gcnew User;
+				user->id = reader->GetInt32(0);
+				user->name = reader->GetString(1);
+				user->userId = reader->GetString(2);
+				user->userEmail = reader->GetString(3);
+				user->userPasskey = reader->GetString(4);
 			user->isAdmin = reader->GetBoolean(5);
 
-			this->Close();
-		}
+				this->Close();
+			}
 		else {
 			MessageBox::Show("Invalid credentials!", "Error", MessageBoxButtons::OK, MessageBoxIcon::Error);
+			}
 		}
-	}
 	catch (Exception^ e) {
-		MessageBox::Show("Cannot establish connection to server.", "SQL Connection Error", MessageBoxButtons::OK, MessageBoxIcon::Error);
+			MessageBox::Show("Cannot establish connection to server.", "SQL Connection Error", MessageBoxButtons::OK, MessageBoxIcon::Error);
 
 	}
 }
@@ -212,8 +227,8 @@ public: bool switchToRegister = false;
 private: System::Void lblRegis_LinkClicked(System::Object^ sender, System::Windows::Forms::LinkLabelLinkClickedEventArgs^ e) {
 	this->switchToRegister = true;
 	this->Close();
-}
+		}
 private: System::Void tbId_TextChanged(System::Object^ sender, System::EventArgs^ e) {
-}
+	}
 };
 }
