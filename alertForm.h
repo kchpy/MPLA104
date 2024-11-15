@@ -22,8 +22,8 @@ namespace MPLA104 {
 
 			sqlQueue();
 			historyLabel->Text = "";
-			sqlHistory();
 			addtlLbl->Text = "";
+			populateHistoryCb();
 			sqlAddtl();
 			queuedLabel->Text = "Request ID: " + rId + "\nUser ID: " + uId + "\nExperiment ID: " + eId + "\nRequest Date: " + rDate + "\nSection: " + section;
 		}
@@ -47,6 +47,9 @@ namespace MPLA104 {
 	private: System::Windows::Forms::Panel^ adminHistory;
 	private: System::Windows::Forms::Label^ label1;
 	private: System::Windows::Forms::Label^ addtlLbl;
+	private: System::Windows::Forms::Label^ label2;
+	private: System::Windows::Forms::ComboBox^ adminHistoryCb;
+
 
 
 
@@ -75,6 +78,8 @@ namespace MPLA104 {
 			this->adminHistory = (gcnew System::Windows::Forms::Panel());
 			this->label1 = (gcnew System::Windows::Forms::Label());
 			this->addtlLbl = (gcnew System::Windows::Forms::Label());
+			this->label2 = (gcnew System::Windows::Forms::Label());
+			this->adminHistoryCb = (gcnew System::Windows::Forms::ComboBox());
 			this->adminHistory->SuspendLayout();
 			this->SuspendLayout();
 			// 
@@ -191,12 +196,37 @@ namespace MPLA104 {
 			this->addtlLbl->TabIndex = 12;
 			this->addtlLbl->Text = L"None.";
 			// 
+			// label2
+			// 
+			this->label2->AutoSize = true;
+			this->label2->BackColor = System::Drawing::Color::Transparent;
+			this->label2->Font = (gcnew System::Drawing::Font(L"Neue Montreal", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label2->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(216)), static_cast<System::Int32>(static_cast<System::Byte>(39)),
+				static_cast<System::Int32>(static_cast<System::Byte>(38)));
+			this->label2->Location = System::Drawing::Point(431, 57);
+			this->label2->Name = L"label2";
+			this->label2->Size = System::Drawing::Size(78, 19);
+			this->label2->TabIndex = 13;
+			this->label2->Text = L"Date filter:";
+			// 
+			// adminHistoryCb
+			// 
+			this->adminHistoryCb->FormattingEnabled = true;
+			this->adminHistoryCb->Location = System::Drawing::Point(435, 79);
+			this->adminHistoryCb->Name = L"adminHistoryCb";
+			this->adminHistoryCb->Size = System::Drawing::Size(121, 21);
+			this->adminHistoryCb->TabIndex = 14;
+			this->adminHistoryCb->SelectedIndexChanged += gcnew System::EventHandler(this, &alertForm::adminHistoryCb_SelectedIndexChanged);
+			// 
 			// alertForm
 			// 
 			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->BackgroundImage = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"$this.BackgroundImage")));
 			this->ClientSize = System::Drawing::Size(800, 600);
+			this->Controls->Add(this->label2);
+			this->Controls->Add(this->adminHistoryCb);
 			this->Controls->Add(this->addtlLbl);
 			this->Controls->Add(this->label1);
 			this->Controls->Add(this->adminHistory);
@@ -281,48 +311,103 @@ namespace MPLA104 {
 		String^ eId;
 		String^ rDate;
 		String^ section;
-	public: void sqlHistory() {
-		String^ connectionString = "Data Source=.\\sqlexpress;Initial Catalog=mpla104data;Integrated Security=True;Encrypt=False;TrustServerCertificate=True"; // Adjust as necessary
+	public: void sqlHistory(String^ selectedDate) {
+		String^ connectionString = "Data Source=.\\sqlexpress;Initial Catalog=mpla104data;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
 
 		// Use the SqlConnection and SqlCommand classes
 		SqlConnection^ connection = gcnew SqlConnection(connectionString);
 
 		try {
-			// Open the connection
 			connection->Open();
 
-			// SQL command to retrieve materials for the specific experiment
-			String^ sql = "SELECT requestId, userId, exptId, requestDate, section FROM requests";
+			// Determine the query based on whether "Show All" or a specific date is selected
+			String^ sql;
+			if (selectedDate == "Show All") {
+				sql = "SELECT requestId, userId, exptId, requestDate, section FROM requests";
+			}
+			else {
+				sql = "SELECT requestId, userId, exptId, requestDate, section FROM requests WHERE CAST(requestDate AS DATE) = @selectedDate";
+			}
 
-			// Create a SqlCommand object
 			SqlCommand^ command = gcnew SqlCommand(sql, connection);
+
+			// If a specific date is selected, add it as a parameter
+			if (selectedDate != "Show All") {
+				command->Parameters->AddWithValue("@selectedDate", selectedDate);
+			}
 
 			// Execute the command and read the results
 			SqlDataReader^ reader = command->ExecuteReader();
 
-            
-			while(reader->Read()) {
-				historyLabel->Text += "Request ID: " + reader->GetInt32(0) + "\nUser ID: " + reader->GetString(1) + "\nExperiment ID: " + reader->GetString(2) + "\nRequest Date: " + reader->GetDateTime(3).ToString("yyyy-MM-dd") + "\nSection: " + reader->GetString(4) + "\n\n";
-			}
-			// Close the reader
-			reader->Close();
+			// Clear the existing content of the label before adding new data
+			historyLabel->Text = "";
 
+			// Display the results
+			while (reader->Read()) {
+				historyLabel->Text += "Request ID: " + reader->GetInt32(0) + "\nUser ID: " + reader->GetString(1) +
+					"\nExperiment ID: " + reader->GetString(2) +
+					"\nRequest Date: " + reader->GetDateTime(3).ToString("yyyy-MM-dd") +
+					"\nSection: " + reader->GetString(4) + "\n\n";
+			}
+
+			reader->Close();
 		}
 		catch (SqlException^ ex) {
-			// Handle SQL exceptions
 			MessageBox::Show("An error occurred: " + ex->Message);
 		}
 		catch (Exception^ ex) {
-			// Handle other exceptions
 			MessageBox::Show("An error occurred: " + ex->Message);
 		}
 		finally {
-			// Ensure the connection is closed
 			if (connection->State == ConnectionState::Open) {
 				connection->Close();
 			}
 		}
 	}
+	public: void populateHistoryCb() {
+		String^ connectionString = "Data Source=.\\sqlexpress;Initial Catalog=mpla104data;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
+		SqlConnection^ connection = gcnew SqlConnection(connectionString);
+
+		try {
+			connection->Open();
+
+			// Get distinct dates from the requests table
+			String^ sql = "SELECT DISTINCT CAST(requestDate AS DATE) FROM requests";
+			SqlCommand^ command = gcnew SqlCommand(sql, connection);
+
+			SqlDataReader^ reader = command->ExecuteReader();
+
+			// Clear existing items and add "Show All" option
+			adminHistoryCb->Items->Clear();
+			adminHistoryCb->Items->Add("Show All");
+
+			// Add unique dates to the ComboBox
+			while (reader->Read()) {
+				String^ date = reader->GetDateTime(0).ToString("yyyy-MM-dd");
+				if (!adminHistoryCb->Items->Contains(date)) {
+					adminHistoryCb->Items->Add(date);
+				}
+			}
+
+			reader->Close();
+		}
+		catch (SqlException^ ex) {
+			MessageBox::Show("An error occurred: " + ex->Message);
+		}
+		finally {
+			if (connection->State == ConnectionState::Open) {
+				connection->Close();
+			}
+		}
+	}
+	private: System::Void historyCb_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) {
+		// Get the selected date from the ComboBox
+		String^ selectedDate = adminHistoryCb->SelectedItem->ToString();
+
+		// Call the sqlHistory method to update the label based on the selected date
+		sqlHistory(selectedDate);
+	}
+
 	public: void sqlQueue() {
 		String^ connectionString = "Data Source=.\\sqlexpress;Initial Catalog=mpla104data;Integrated Security=True;Encrypt=False;TrustServerCertificate=True"; // Adjust as necessary
 
@@ -389,7 +474,7 @@ private: System::Void adminAccept_Click(System::Object^ sender, System::EventArg
 		String^ checkRequestedQtySql = "SELECT m.materialId, m.quantityAvailable, SUM(rm.requestedQuantity) AS totalRequested "
 			"FROM material m "
 			"LEFT JOIN request_materials rm ON m.materialId = rm.materialId AND rm.requestId = @requestId "
-			"WHERE m.materialId IN (SELECT materialId FROM request_materials WHERE requestId = @requestId) "
+			"WHERE m.materialId IN (SELECT materialId FROM request_materials WHERE requestId = @requestId) AND m.isActive = 1"
 			"GROUP BY m.materialId, m.quantityAvailable";
 
 		SqlCommand^ checkRequestedQtyCommand = gcnew SqlCommand(checkRequestedQtySql, connection);
@@ -426,7 +511,7 @@ private: System::Void adminAccept_Click(System::Object^ sender, System::EventArg
 			"SET m.quantityAvailable = m.quantityAvailable - COALESCE(rm.requestedQuantity, 0) "
 			"FROM material m "
 			"INNER JOIN request_materials rm ON m.materialId = rm.materialId "
-			"WHERE rm.requestId = @requestId";
+			"WHERE rm.requestId = @requestId AND m.isActive = 1";
 
 		SqlCommand^ deductRequestedMaterialsCommand = gcnew SqlCommand(deductRequestedMaterialsSql, connection);
 		deductRequestedMaterialsCommand->Parameters->AddWithValue("@requestId", rId);
@@ -437,7 +522,7 @@ private: System::Void adminAccept_Click(System::Object^ sender, System::EventArg
 			"SET m.quantityAvailable = m.quantityAvailable - COALESCE(em.defaultQuantity, 0) "
 			"FROM material m "
 			"INNER JOIN expt_material em ON m.materialId = em.materialId AND em.exptId = @exptId "
-			"WHERE em.exptId = @exptId";
+			"WHERE em.exptId = @exptId AND m.isActive = 1";
 
 		SqlCommand^ deductExptMaterialsCommand = gcnew SqlCommand(deductExptMaterialsSql, connection);
 		deductExptMaterialsCommand->Parameters->AddWithValue("@exptId", eId);
@@ -510,6 +595,10 @@ private: System::Void adminDeny_Click(System::Object^ sender, System::EventArgs^
 	}
 }
 private: System::Void label1_Click(System::Object^ sender, System::EventArgs^ e) {
+}
+private: System::Void adminHistoryCb_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) {
+	String^ selectedDate = adminHistoryCb->SelectedItem->ToString();
+	sqlHistory(selectedDate);
 }
 };
 }

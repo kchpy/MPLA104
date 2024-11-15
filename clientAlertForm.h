@@ -27,7 +27,7 @@ namespace MPLA104 {
 			clientHistoryLabel->Text = "";
 			
 			sqlQueue();
-			sqlHistory();
+			historyCb();
 			
 			
 		}
@@ -48,6 +48,9 @@ namespace MPLA104 {
 
 	private: System::Windows::Forms::Panel^ adminHistory;
 	private: System::Windows::Forms::Label^ clientHistoryLabel;
+	private: System::Windows::Forms::ComboBox^ clientHistoryCb;
+	private: System::Windows::Forms::Panel^ panel1;
+	private: System::Windows::Forms::Label^ label1;
 
 	protected:
 
@@ -69,7 +72,11 @@ namespace MPLA104 {
 			this->clientQueueLabel = (gcnew System::Windows::Forms::Label());
 			this->adminHistory = (gcnew System::Windows::Forms::Panel());
 			this->clientHistoryLabel = (gcnew System::Windows::Forms::Label());
+			this->clientHistoryCb = (gcnew System::Windows::Forms::ComboBox());
+			this->panel1 = (gcnew System::Windows::Forms::Panel());
+			this->label1 = (gcnew System::Windows::Forms::Label());
 			this->adminHistory->SuspendLayout();
+			this->panel1->SuspendLayout();
 			this->SuspendLayout();
 			// 
 			// clientAlertReturn
@@ -95,7 +102,7 @@ namespace MPLA104 {
 				static_cast<System::Byte>(0)));
 			this->clientQueueLabel->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(216)),
 				static_cast<System::Int32>(static_cast<System::Byte>(39)), static_cast<System::Int32>(static_cast<System::Byte>(38)));
-			this->clientQueueLabel->Location = System::Drawing::Point(58, 157);
+			this->clientQueueLabel->Location = System::Drawing::Point(-4, 0);
 			this->clientQueueLabel->Name = L"clientQueueLabel";
 			this->clientQueueLabel->Size = System::Drawing::Size(89, 76);
 			this->clientQueueLabel->TabIndex = 10;
@@ -125,13 +132,48 @@ namespace MPLA104 {
 			this->clientHistoryLabel->TabIndex = 9;
 			this->clientHistoryLabel->Text = L"NULL";
 			// 
+			// clientHistoryCb
+			// 
+			this->clientHistoryCb->FormattingEnabled = true;
+			this->clientHistoryCb->Location = System::Drawing::Point(434, 79);
+			this->clientHistoryCb->Name = L"clientHistoryCb";
+			this->clientHistoryCb->Size = System::Drawing::Size(121, 21);
+			this->clientHistoryCb->TabIndex = 12;
+			this->clientHistoryCb->SelectedIndexChanged += gcnew System::EventHandler(this, &clientAlertForm::clientHistoryCb_SelectedIndexChanged);
+			// 
+			// panel1
+			// 
+			this->panel1->AutoScroll = true;
+			this->panel1->BackColor = System::Drawing::Color::White;
+			this->panel1->Controls->Add(this->clientQueueLabel);
+			this->panel1->Location = System::Drawing::Point(59, 157);
+			this->panel1->Name = L"panel1";
+			this->panel1->Size = System::Drawing::Size(309, 389);
+			this->panel1->TabIndex = 12;
+			// 
+			// label1
+			// 
+			this->label1->AutoSize = true;
+			this->label1->BackColor = System::Drawing::Color::Transparent;
+			this->label1->Font = (gcnew System::Drawing::Font(L"Neue Montreal", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(0)));
+			this->label1->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(216)), static_cast<System::Int32>(static_cast<System::Byte>(39)),
+				static_cast<System::Int32>(static_cast<System::Byte>(38)));
+			this->label1->Location = System::Drawing::Point(430, 57);
+			this->label1->Name = L"label1";
+			this->label1->Size = System::Drawing::Size(78, 19);
+			this->label1->TabIndex = 10;
+			this->label1->Text = L"Date filter:";
+			// 
 			// clientAlertForm
 			// 
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::None;
 			this->BackgroundImage = (cli::safe_cast<System::Drawing::Image^>(resources->GetObject(L"$this.BackgroundImage")));
 			this->ClientSize = System::Drawing::Size(800, 600);
+			this->Controls->Add(this->label1);
+			this->Controls->Add(this->panel1);
+			this->Controls->Add(this->clientHistoryCb);
 			this->Controls->Add(this->adminHistory);
-			this->Controls->Add(this->clientQueueLabel);
 			this->Controls->Add(this->clientAlertReturn);
 			this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::None;
 			this->MaximumSize = System::Drawing::Size(800, 600);
@@ -141,6 +183,8 @@ namespace MPLA104 {
 			this->Text = L"clientAlertForm";
 			this->adminHistory->ResumeLayout(false);
 			this->adminHistory->PerformLayout();
+			this->panel1->ResumeLayout(false);
+			this->panel1->PerformLayout();
 			this->ResumeLayout(false);
 			this->PerformLayout();
 
@@ -155,8 +199,8 @@ namespace MPLA104 {
 		String^ section;
 		bool assessed;
 		bool approved;
-	public: void sqlHistory() {
-		String^ connectionString = "Data Source=.\\sqlexpress;Initial Catalog=mpla104data;Integrated Security=True;Encrypt=False;TrustServerCertificate=True"; // Adjust as necessary
+	public: void sqlHistory(String^ selectedDate) {
+		String^ connectionString = "Data Source=.\\sqlexpress;Initial Catalog=mpla104data;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
 
 		// Use the SqlConnection and SqlCommand classes
 		SqlConnection^ connection = gcnew SqlConnection(connectionString);
@@ -165,29 +209,45 @@ namespace MPLA104 {
 			// Open the connection
 			connection->Open();
 
-			// SQL command to retrieve materials for the specific experiment
-			String^ sql = "SELECT requestId, userId, exptId, requestDate, section, approved, assessed FROM requests WHERE userId = '" + ID + "'";
+			// SQL query to retrieve requests based on the selected date or all if "Show All" is chosen
+			String^ sql;
+			if (selectedDate == "Show All") {
+				sql = "SELECT requestId, userId, exptId, requestDate, section, approved, assessed FROM requests WHERE userId = @userId";
+			}
+			else {
+				sql = "SELECT requestId, userId, exptId, requestDate, section, approved, assessed FROM requests WHERE userId = @userId AND CAST(requestDate AS DATE) = @selectedDate";
+			}
 
 			// Create a SqlCommand object
 			SqlCommand^ command = gcnew SqlCommand(sql, connection);
 
+			// Add parameters to avoid SQL injection
+			command->Parameters->AddWithValue("@userId", ID);
+			if (selectedDate != "Show All") {
+				command->Parameters->AddWithValue("@selectedDate", selectedDate);
+			}
+
 			// Execute the command and read the results
 			SqlDataReader^ reader = command->ExecuteReader();
 
+			// Clear the label text before displaying new data
+			clientHistoryLabel->Text = "";
+
 			while (reader->Read()) {
-				rId = reader->GetInt32(0);
-				uId = reader->GetString(1);
-				eId = reader->GetString(2);
-				rDate = reader->GetDateTime(3).ToString("yyyy-MM-dd");
-				section = reader->GetString(4);
-				approved = reader->GetBoolean(5);
-				assessed = reader->GetBoolean(6);
+				int rId = reader->GetInt32(0);
+				String^ uId = reader->GetString(1);
+				String^ eId = reader->GetString(2);
+				String^ rDate = reader->GetDateTime(3).ToString("yyyy-MM-dd");
+				String^ section = reader->GetString(4);
+				bool approved = reader->GetBoolean(5);
+				bool assessed = reader->GetBoolean(6);
 
-				clientHistoryLabel->Text += "Request ID: " + rId + "\nUser ID: " + uId + "\nExperiment ID: " + eId + "\nRequest Date: " + rDate + "\nSection: " + section + "\nStatus: " + (assessed ? (approved ? "Accepted" : "Denied") : "Pending" ) + "\n\n";
+				// Update the label with request details
+				clientHistoryLabel->Text += "Request ID: " + rId + "\nUser ID: " + uId +
+					"\nExperiment ID: " + eId + "\nRequest Date: " + rDate + "\nSection: " + section +
+					"\nStatus: " + (assessed ? (approved ? "Accepted" : "Denied") : "Pending") + "\n\n";
 			}
-			// Close the reader
 			reader->Close();
-
 		}
 		catch (SqlException^ ex) {
 			// Handle SQL exceptions
@@ -204,6 +264,8 @@ namespace MPLA104 {
 			}
 		}
 	}
+
+
 	public: void sqlQueue() {
 		String^ connectionString = "Data Source=.\\sqlexpress;Initial Catalog=mpla104data;Integrated Security=True;Encrypt=False;TrustServerCertificate=True"; // Adjust as necessary
 
@@ -255,5 +317,55 @@ namespace MPLA104 {
 	private: System::Void clientAlertReturn_Click(System::Object^ sender, System::EventArgs^ e) {
 		this->Close();
 	}
-	};
+	private: System::Void clientHistoryCb_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) {
+		// Get the selected date from the ComboBox
+		String^ selectedDate = clientHistoryCb->SelectedItem->ToString();
+
+		// Call the sqlHistory method with the selected date
+		sqlHistory(selectedDate);
+	}
+	public: void historyCb() {
+		String^ connectionString = "Data Source=.\\sqlexpress;Initial Catalog=mpla104data;Integrated Security=True;Encrypt=False;TrustServerCertificate=True";
+
+		// Use the SqlConnection and SqlCommand classes
+		SqlConnection^ connection = gcnew SqlConnection(connectionString);
+
+		try {
+			// Open the connection
+			connection->Open();
+
+			String^ sql = "SELECT DISTINCT CAST(requestDate AS DATE) FROM requests WHERE userId = @userId";
+			SqlCommand^ command = gcnew SqlCommand(sql, connection);
+			command->Parameters->AddWithValue("@userId", ID);
+
+			SqlDataReader^ reader = command->ExecuteReader();
+
+			// Clear existing items in the ComboBox
+			clientHistoryCb->Items->Clear();
+
+			// Add the "Show All" option
+			clientHistoryCb->Items->Add("Show All");
+
+			while (reader->Read()) {
+				String^ date = reader->GetDateTime(0).ToString("yyyy-MM-dd");
+
+				// Add the date to the ComboBox if it's not already present
+				if (!clientHistoryCb->Items->Contains(date)) {
+					clientHistoryCb->Items->Add(date);
+				}
+			}
+			reader->Close();
+		}
+		catch (SqlException^ ex) {
+			MessageBox::Show("An error occurred: " + ex->Message);
+		}
+		finally {
+			if (connection->State == ConnectionState::Open) {
+				connection->Close();
+			}
+		}
+	}
+
+
+};
 }
