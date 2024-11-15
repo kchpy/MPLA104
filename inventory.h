@@ -729,43 +729,56 @@ namespace MPLA104 {
 		try {
 			connection->Open();
 
-			// Check if a material with the same name exists and is inactive (case-insensitive)
-			String^ checkExistingSql = "SELECT COUNT(*) FROM material WHERE LOWER(materialName) = LOWER(@materialName) AND isActive = 0";
+			// Check if a material with the same name exists, whether active or inactive
+			String^ checkExistingSql = "SELECT COUNT(*) FROM material WHERE LOWER(materialName) = LOWER(@materialName)";
 			SqlCommand^ checkCommand = gcnew SqlCommand(checkExistingSql, connection);
 			checkCommand->Parameters->AddWithValue("@materialName", addMtlTb->Text);
 
 			int materialCount = (int)checkCommand->ExecuteScalar();
 
 			if (materialCount > 0) {
-				// If the material is inactive, reactivate it (set isActive = 1)
-				String^ updateSql = "UPDATE material SET isActive = 1, quantityAvailable = @quantityAvailable WHERE LOWER(materialName) = LOWER(@materialName) AND isActive = 0";
-				SqlCommand^ updateCommand = gcnew SqlCommand(updateSql, connection);
-				updateCommand->Parameters->AddWithValue("@materialName", addMtlTb->Text);
-				updateCommand->Parameters->AddWithValue("@quantityAvailable", addQtyTb->Text);
-
-				int rowsUpdated = updateCommand->ExecuteNonQuery();
-
-				if (rowsUpdated > 0) {
-					MessageBox::Show("Material reactivated successfully.");
-				}
-				else {
-					MessageBox::Show("Material could not be reactivated.");
-				}
+				// If a material with the same name already exists, show an error message
+				MessageBox::Show("A material with the same name already exists. Please choose a different name.");
 			}
 			else {
-				// If no inactive material exists, insert a new one
-				String^ insertSql = "INSERT INTO material (materialName, quantityAvailable, isActive) VALUES (@materialName, @quantityAvailable, 1)";
-				SqlCommand^ insertCommand = gcnew SqlCommand(insertSql, connection);
-				insertCommand->Parameters->AddWithValue("@materialName", addMtlTb->Text);
-				insertCommand->Parameters->AddWithValue("@quantityAvailable", addQtyTb->Text);
+				// If no material with the same name exists, check if it is inactive
+				String^ checkInactiveSql = "SELECT COUNT(*) FROM material WHERE LOWER(materialName) = LOWER(@materialName) AND isActive = 0";
+				SqlCommand^ checkInactiveCommand = gcnew SqlCommand(checkInactiveSql, connection);
+				checkInactiveCommand->Parameters->AddWithValue("@materialName", addMtlTb->Text);
 
-				int rowsAffected = insertCommand->ExecuteNonQuery();
+				int inactiveMaterialCount = (int)checkInactiveCommand->ExecuteScalar();
 
-				if (rowsAffected > 0) {
-					MessageBox::Show("Material added successfully.");
+				if (inactiveMaterialCount > 0) {
+					// If the material is inactive, reactivate it
+					String^ updateSql = "UPDATE material SET isActive = 1, quantityAvailable = @quantityAvailable WHERE LOWER(materialName) = LOWER(@materialName) AND isActive = 0";
+					SqlCommand^ updateCommand = gcnew SqlCommand(updateSql, connection);
+					updateCommand->Parameters->AddWithValue("@materialName", addMtlTb->Text);
+					updateCommand->Parameters->AddWithValue("@quantityAvailable", addQtyTb->Text);
+
+					int rowsUpdated = updateCommand->ExecuteNonQuery();
+
+					if (rowsUpdated > 0) {
+						MessageBox::Show("Material reactivated successfully.");
+					}
+					else {
+						MessageBox::Show("Material could not be reactivated.");
+					}
 				}
 				else {
-					MessageBox::Show("Material could not be added.");
+					// If no inactive material exists, insert a new one
+					String^ insertSql = "INSERT INTO material (materialName, quantityAvailable, isActive) VALUES (@materialName, @quantityAvailable, 1)";
+					SqlCommand^ insertCommand = gcnew SqlCommand(insertSql, connection);
+					insertCommand->Parameters->AddWithValue("@materialName", addMtlTb->Text);
+					insertCommand->Parameters->AddWithValue("@quantityAvailable", addQtyTb->Text);
+
+					int rowsAffected = insertCommand->ExecuteNonQuery();
+
+					if (rowsAffected > 0) {
+						MessageBox::Show("Material added successfully.");
+					}
+					else {
+						MessageBox::Show("Material could not be added.");
+					}
 				}
 			}
 		}
@@ -784,6 +797,7 @@ namespace MPLA104 {
 			}
 		}
 	}
+
 
 	private: System::Void UpdateMaterialQuantity()
 	{
